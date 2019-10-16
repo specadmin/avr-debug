@@ -134,7 +134,7 @@ void DEBUG_SECTION debug_print_dump(WORD from, const unsigned int sz, enum mem_a
     {
         #ifdef DEBUG_EXTENDED_DUMP
         _write_byte(' ');
-        debug_print_hex(from+k*16);
+        debug_print_hex(from+k*16, false);
         _write_byte(':');
         _write_byte(' ');
         _write_byte(' ');
@@ -319,10 +319,11 @@ void DEBUG_SECTION debug_print_hex(unsigned char data)
     _endl();
 }
 //-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_hex(unsigned int data)
+void DEBUG_SECTION debug_print_hex(unsigned int data, bool new_line)
 {
     _print_hexN(data,2);
-    _endl();
+    if(new_line)
+        _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(unsigned long int data)

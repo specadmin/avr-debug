@@ -54,6 +54,22 @@ Add -DDEBUG parameter to your compiller command line options. If this parameter 
 
 # Use
 
+## DEBUG_INIT()
+
+DEBUG_INIT() initializes the library code. This call should be executed before any other library calls.
+
+### Code
+```
+DEBUG_INIT()
+```
+
+### Output
+```
+==========
+DEBUG INIT
+==========
+```
+
 ## DSTR()
 
 DSTR() prints constant string with carrier return (\n). The string is printed from FLASH memory directly, saving your RAM.
@@ -96,7 +112,7 @@ char a=10;
 DVAR(a);
 unsigned char b=200;
 DVAR(b);
-int c=45000;
+int c=-15000;
 DVAR(c);
 long int d=1000000;
 DVAR(d);
@@ -107,7 +123,7 @@ DVAR(a+b);
 ```
 a=10
 b=200
-c=45000
+c=-15000
 d=1000000
 a+b=210
 ```
@@ -154,14 +170,14 @@ DHEX8() prints several byte values in hexadecimal format one by one in the line
 ### Code
 ```
 char a=0x1A;
-char b=0x2B;
+char b=0xFB;
 unsigned char c=0x3C;
 DHEX8(3, a, b, c);
 ```
 
 ### Output
 ```
-1A 2B 3C
+1A FB 3C
 ```
 
 ## DUMP_MEM()
@@ -170,17 +186,23 @@ DUMP_MEM() prints RAM dump from the specified location
 
 ### Code
 ```
-char a[]="Some large text";
+char a[]="Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 DUMP_MEM(a, sizeof(a));
 ```
 
 ### Output
 If DEBUG_EXTENDED_DUMP is defined
 ```
-
+ 04C4:  4C 6F 72 65 6D 20 69 70 73 75 6D 20 64 6F 6C 6F   Lorem ipsum dolo
+ 04D4:  72 20 73 69 74 20 61 6D 65 74 2C 20 63 6F 6E 73   r sit amet, cons
+ 04E4:  65 63 74 65 74 75 72 20 61 64 69 70 69 73 63 69   ectetur adipisci
+ 04F4:  6E 67 20 65 6C 69 74 00                           ng elit.
 ```
 
 If DEBUG_EXTENDED_DUMP is **not** defined
 ```
-
+4C 6F 72 65 6D 20 69 70 73 75 6D 20 64 6F 6C 6F
+72 20 73 69 74 20 61 6D 65 74 2C 20 63 6F 6E 73
+65 63 74 65 74 75 72 20 61 64 69 70 69 73 63 69
+6E 67 20 65 6C 69 74 00
 ```

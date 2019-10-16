@@ -76,7 +76,7 @@
 enum mem_area { RAM=1, PGM, EE };
 void debug_print_pm(const char *str, bool new_line=false);
 void debug_print_dump(WORD from, const unsigned int sz, enum mem_area area);
-void debug_print_hex1(char data,bool new_line=false);
+void debug_print_hex1(char data, bool new_line=false);
 void debug_print_dec(char data);
 void debug_print_dec(int data);
 void debug_print_dec(long data);
@@ -87,7 +87,7 @@ void debug_print_hex(char data);
 void debug_print_hex(int data);
 void debug_print_hex(long data);
 void debug_print_hex(unsigned char data);
-void debug_print_hex(unsigned int data);
+void debug_print_hex(unsigned int data, bool new_line=true);
 void debug_print_hex(unsigned long data);
 void debug_print_hex8(BYTE count, ...);
 //-----------------------------------------------------------------------------
