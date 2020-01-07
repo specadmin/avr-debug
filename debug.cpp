@@ -59,7 +59,7 @@ static void DEBUG_SECTION _write_byte(char data)
         #define D_DELAY8 D_DELAY-8
     clr_bit(DEBUG_PORT, DEBUG_BIT); // start bit
     delay_cycles(D_DELAY2);    // ceil(F_CPU)/115200-2 (-2 clocks for 'for' initialisation)
-    for(int i=0;i<8;i++) // data bits
+    for(int i = 0; i < 8; i++) // data bits
     {
         if(data & 0x01)
         {
@@ -81,7 +81,7 @@ static void DEBUG_SECTION _write_byte(char data)
 //-----------------------------------------------------------------------------
 static void DEBUG_SECTION _write(const char *data,int num)
 {
-    for(int i=0;i<num;i++)
+    for(int i = 0; i < num; i++)
         _write_byte(data[i]);
 }
 //-----------------------------------------------------------------------------
@@ -93,11 +93,11 @@ __inline void _endl()
 void DEBUG_SECTION debug_print_hex1(char data,bool new_line)
 {
     char buf[2];
-    char c=data&0x0F;
-    buf[1]=c<10 ? c+'0' : c-10+'A';
-    c=(data>>4)&0x0F;
-    buf[0]=c<10 ? c+'0' : c-10+'A';
-    _write(buf,2);
+    char c = data & 0x0F;
+    buf[1] = c < 10 ? c + '0' : c - 10 + 'A';
+    c= (data >> 4) & 0x0F;
+    buf[0] = c < 10 ? c + '0' : c - 10 + 'A';
+    _write(buf, 2);
     if(new_line)
     {
         _endl();
@@ -107,21 +107,21 @@ void DEBUG_SECTION debug_print_hex1(char data,bool new_line)
 __inline void DEBUG_SECTION _print_hexN(long int data, BYTE bytes)
 {
     char buf[8];
-    char *p=buf+7;
-    bytes*=2;
-    for(int i=0;i<bytes;i++)
+    char *p = buf + 7;
+    bytes *= 2;
+    for(int i = 0; i < bytes; i++)
     {
-        char c=data&0x0F;
-        *p--=c<10 ? c+'0' : c-10+'A';
-        data>>=4;
+        char c = data & 0x0F;
+        *p-- = (c < 10) ? c + '0' : c - 10 + 'A';
+        data >>= 4;
     }
     _write(buf+sizeof(buf)-bytes,bytes);
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_pm(const char *str,bool new_line)
 {
-    char val=0;
-    while((val=pgm_read_byte(str++)))
+    char val = 0;
+    while((val = pgm_read_byte(str++)))
         _write_byte(val);
     if(new_line)
         _endl();
@@ -130,33 +130,33 @@ void DEBUG_SECTION debug_print_pm(const char *str,bool new_line)
 void DEBUG_SECTION debug_print_dump(WORD from, const unsigned int sz, enum mem_area area)
 {
     WORD index;
-    for(WORD k=0;k<=(sz-1)/16;k++)
+    for(WORD k = 0; k <= (sz - 1) / 16; k++)
     {
         #ifdef DEBUG_EXTENDED_DUMP
         _write_byte(' ');
-        debug_print_hex(from+k*16, false);
+        debug_print_hex(from + k * 16, false);
         _write_byte(':');
         _write_byte(' ');
         _write_byte(' ');
         #endif
-        for(WORD i=0;i<16;i++)
+        for(WORD i = 0; i < 16; i++)
         {
-            index=k*16+i;
-            if(index<sz)
+            index = k * 16 + i;
+            if(index < sz)
             {
-                BYTE val=0;
+                BYTE val = 0;
                 switch(area)
                 {
                 case EE:
                     #ifdef DEBUG_EEPROM
-                    val=EEPROM_read(from+index);
+                    val = EEPROM_read(from + index);
                     #endif
                     break;
                 case PGM:
-                    val=pgm_read_byte((BYTE*)from+index);
+                    val = pgm_read_byte((BYTE*)from + index);
                     break;
                 case RAM:
-                    val=*(BYTE*)((BYTE*)from+index);
+                    val = *(BYTE*)((BYTE*)from + index);
                 }
                 debug_print_hex1(val);
             }
@@ -170,23 +170,23 @@ void DEBUG_SECTION debug_print_dump(WORD from, const unsigned int sz, enum mem_a
         #ifdef DEBUG_EXTENDED_DUMP
         _write_byte(' ');
         _write_byte(' ');
-        for(WORD i=0;i<16;i++)
+        for(WORD i = 0; i < 16; i++)
         {
-            index=k*16+i;
-            if(index>=sz) break;
-            BYTE c=0;
+            index = k * 16 + i;
+            if(index >= sz) break;
+            BYTE c = 0;
             switch(area)
             {
             case EE:
                 #ifdef DEBUG_EEPROM
-                c=EEPROM_read(from+index);
+                c = EEPROM_read(from + index);
                 #endif
                 break;
             case PGM:
-                c=pgm_read_byte((BYTE*)from+index);
+                c = pgm_read_byte((BYTE*)from + index);
                 break;
             case RAM:
-                c=*(BYTE*)((BYTE*)from+index);
+                c = *(BYTE*)((BYTE*)from + index);
             }
             switch(c)
             {
@@ -207,12 +207,12 @@ void DEBUG_SECTION debug_print_dump(WORD from, const unsigned int sz, enum mem_a
             case 0xCF:
             case 0xDF:
             case 0xEF:
-                c='.';
+                c = '.';
             }
             _write_byte(c);
         }
         #endif
-        if((k+1)*16<sz)
+        if((k + 1) * 16 < sz)
             _endl();
     }
     _endl();
@@ -223,7 +223,7 @@ void DEBUG_SECTION debug_print_dec(char data)
     if(data<0)
     {
         _write_byte('-');
-        _print_dec(~data+1);
+        _print_dec(~data + 1);
     }
     else
     {
@@ -241,7 +241,7 @@ void DEBUG_SECTION debug_print_dec(int data)
     if(data<0)
     {
         _write_byte('-');
-        _print_dec(~data+1);
+        _print_dec(~data + 1);
     }
     else
     {
@@ -254,7 +254,7 @@ void DEBUG_SECTION debug_print_dec(long data)
     if(data<0)
     {
         _write_byte('-');
-        _print_dec(~data+1);
+        _print_dec(~data + 1);
     }
     else
     {
@@ -280,8 +280,8 @@ void DEBUG_SECTION debug_print_dec(unsigned long data)
 __inline void _print_dec(unsigned long data)
 {
     char buf[10];
-    BYTE i=0;
-    if(data<10)
+    BYTE i = 0;
+    if(data < 10)
     {
         _write_byte(data+'0');
     }
@@ -289,12 +289,12 @@ __inline void _print_dec(unsigned long data)
     {
         while(data)
         {
-            buf[i++]=data%10;
-            data/=10;
+            buf[i++] = data % 10;
+            data /= 10;
         }
         while(i)
         {
-            _write_byte(buf[--i]+'0');
+            _write_byte(buf[--i] + '0');
         }
     }
     _endl();
@@ -308,13 +308,13 @@ void DEBUG_SECTION debug_print_hex(char data)
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(int data)
 {
-    _print_hexN(data,2);
+    _print_hexN(data, 2);
     _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(long int data)
 {
-    _print_hexN(data,4);
+    _print_hexN(data, 4);
     _endl();
 }
 //-----------------------------------------------------------------------------
@@ -326,20 +326,20 @@ void DEBUG_SECTION debug_print_hex(unsigned char data)
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(void* data)
 {
-    _print_hexN((unsigned int)data,2);
+    _print_hexN((unsigned int)data, 2);
     _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(unsigned int data, bool new_line)
 {
-    _print_hexN(data,2);
+    _print_hexN(data, 2);
     if(new_line)
         _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(unsigned long int data)
 {
-    _print_hexN(data,4);
+    _print_hexN(data, 4);
     _endl();
 }
 //-----------------------------------------------------------------------------
@@ -347,9 +347,9 @@ void DEBUG_SECTION debug_print_hex8(BYTE count, ...)
 {
     va_list list;
     va_start(list, count);
-    while(count-->0)
+    while(count-- > 0)
     {
-        debug_print_hex1((char)va_arg(list,int));
+        debug_print_hex1((char)va_arg(list, int));
         _write_byte(' ');
     }
     _endl();
