@@ -7,7 +7,7 @@
 #include "debug.h"
 //-----------------------------------------------------------------------------
 #ifdef DEBUG
-char dbg_fmt[DEBUG_BUF_SIZE];
+//char dbg_fmt[DEBUG_BUF_SIZE];
 char dbg_buf[DEBUG_BUF_SIZE];
 //-----------------------------------------------------------------------------
 #pragma GCC diagnostic ignored "-Wunused-function"
