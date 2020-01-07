@@ -231,6 +231,11 @@ void DEBUG_SECTION debug_print_dec(char data)
     }
 }
 //-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(void* data)
+{
+    _print_dec((unsigned int)data);
+}
+//-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_dec(int data)
 {
     if(data<0)
@@ -316,6 +321,12 @@ void DEBUG_SECTION debug_print_hex(long int data)
 void DEBUG_SECTION debug_print_hex(unsigned char data)
 {
     debug_print_hex1(data);
+    _endl();
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_hex(void* data)
+{
+    _print_hexN((unsigned int)data,2);
     _endl();
 }
 //-----------------------------------------------------------------------------

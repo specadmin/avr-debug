@@ -26,6 +26,7 @@
 
 
 //-----------------------------------------------------------------------------
+#include "RAM_guard.h"
 #ifdef DEBUG
     #include "debug_def.h"
 #else
