@@ -12,8 +12,6 @@ char dbg_buf[DEBUG_BUF_SIZE];
 //-----------------------------------------------------------------------------
 #pragma GCC diagnostic ignored "-Wunused-function"
 //-----------------------------------------------------------------------------
-void _print_dec(unsigned long data);
-//-----------------------------------------------------------------------------
 static void DEBUG_SECTION _write_byte(char data)
 {
     disable_interrupts();
@@ -218,66 +216,7 @@ void DEBUG_SECTION debug_print_dump(WORD from, const unsigned int sz, enum mem_a
     _endl();
 }
 //-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(char data)
-{
-    if(data<0)
-    {
-        _write_byte('-');
-        _print_dec(~data + 1);
-    }
-    else
-    {
-        _print_dec(data);
-    }
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(void* data)
-{
-    _print_dec((unsigned int)data);
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(int data)
-{
-    if(data<0)
-    {
-        _write_byte('-');
-        _print_dec(~data + 1);
-    }
-    else
-    {
-        _print_dec(data);
-    }
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(long data)
-{
-    if(data<0)
-    {
-        _write_byte('-');
-        _print_dec(~data + 1);
-    }
-    else
-    {
-        _print_dec(data);
-    }
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(unsigned char data)
-{
-    _print_dec(data);
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(unsigned int data)
-{
-    _print_dec(data);
-}
-//-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_dec(unsigned long data)
-{
-    _print_dec(data);
-}
-//-----------------------------------------------------------------------------
-__inline void _print_dec(unsigned long data)
+__inline void _print_dec(unsigned long data, bool new_line)
 {
     char buf[10];
     BYTE i = 0;
@@ -297,7 +236,66 @@ __inline void _print_dec(unsigned long data)
             _write_byte(buf[--i] + '0');
         }
     }
-    _endl();
+    if(new_line) _endl();
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(char data, bool new_line)
+{
+    if(data<0)
+    {
+        _write_byte('-');
+        _print_dec(~data + 1, new_line);
+    }
+    else
+    {
+        _print_dec(data, new_line);
+    }
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(void* data, bool new_line)
+{
+    _print_dec((unsigned int)data, new_line);
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(int data, bool new_line)
+{
+    if(data<0)
+    {
+        _write_byte('-');
+        _print_dec(~data + 1, new_line);
+    }
+    else
+    {
+        _print_dec(data, new_line);
+    }
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(long data, bool new_line)
+{
+    if(data<0)
+    {
+        _write_byte('-');
+        _print_dec(~data + 1, new_line);
+    }
+    else
+    {
+        _print_dec(data, new_line);
+    }
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(unsigned char data, bool new_line)
+{
+    _print_dec(data, new_line);
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(unsigned int data, bool new_line)
+{
+    _print_dec(data, new_line);
+}
+//-----------------------------------------------------------------------------
+void DEBUG_SECTION debug_print_dec(unsigned long data, bool new_line)
+{
+    _print_dec(data, new_line);
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(char data)
@@ -324,17 +322,16 @@ void DEBUG_SECTION debug_print_hex(unsigned char data)
     _endl();
 }
 //-----------------------------------------------------------------------------
-void DEBUG_SECTION debug_print_hex(void* data)
+void DEBUG_SECTION debug_print_hex(void* data, bool new_line)
 {
     _print_hexN((unsigned int)data, 2);
-    _endl();
+    if(new_line) _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(unsigned int data, bool new_line)
 {
     _print_hexN(data, 2);
-    if(new_line)
-        _endl();
+    if(new_line) _endl();
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_hex(unsigned long int data)

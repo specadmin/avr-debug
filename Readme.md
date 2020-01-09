@@ -206,3 +206,53 @@ If DEBUG_EXTENDED_DUMP is **not** defined
 65 63 74 65 74 75 72 20 61 64 69 70 69 73 63 69
 6E 67 20 65 6C 69 74 00
 ```
+
+## memory_usage()
+
+memory_usage() prints RAM usage at the moment, when it is called. The fallowing macro should be defined to enable this function. It will do nothing otherwise.
+```
+#define RAM_GUARD_ENABLED
+```
+
+### Code
+```
+memory_usage()
+```
+
+### Output
+```
+===================
+     RAM USAGE
+===================
+.data   0100      6
+.bss    0106    101
+heap    016B   1065
+stack   07D2     45
+-------------------
+total          1217
+free            831
+```
+
+
+## heap_info()
+
+heap_info() prints heap table at the moment, when it is called.
+
+### Code
+```
+heap_info()
+```
+
+### Output
+```
+=======================
+       HEAP INFO
+=======================
+PTR      SIZE    STATUS
+016D      124     freed
+01EB      235     alloc
+02D8       16     freed
+02EA      100     alloc
+0350       78     alloc
+03A0      500     alloc
+```
