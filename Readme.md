@@ -108,24 +108,24 @@ DVAR() prints an integer variable name and its value in decimal view.
 
 ### Code
 ```
-char a=10;
+char a = 10;
 DVAR(a);
-unsigned char b=200;
+unsigned char b = 200;
 DVAR(b);
-int c=-15000;
+int c = -15000;
 DVAR(c);
-long int d=1000000;
+long int d = 1000000;
 DVAR(d);
-DVAR(a+b);
+DVAR(a + b);
 ```
 
 ### Output
 ```
-a=10
-b=200
-c=-15000
-d=1000000
-a+b=210
+a = 10
+b = 200
+c = -15000
+d = 1000000
+a + b = 210
 ```
 
 ## DREG()
@@ -139,7 +139,7 @@ DREG(PORTD);
 
 ### Output
 ```
-PORTD=0x16
+PORTD = 0x16
 ```
 
 ## DHEX()
@@ -148,11 +148,11 @@ DHEX() prints an integer variable value in hexadecimal format
 
 ### Code
 ```
-char a=0x1A;
+char a = 0x1A;
 DHEX(a);
-int b=0x1A2B;
+int b = 0x1A2B;
 DHEX(b);
-long int c=0x1A2B3C4D;
+long int c = 0x1A2B3C4D;
 DHEX(c);
 ```
 
@@ -169,9 +169,9 @@ DHEX8() prints several byte values in hexadecimal format one by one in the line
 
 ### Code
 ```
-char a=0x1A;
-char b=0xFB;
-unsigned char c=0x3C;
+char a = 0x1A;
+char b = 0xFB;
+unsigned char c = 0x3C;
 DHEX8(3, a, b, c);
 ```
 
@@ -186,7 +186,7 @@ DUMP_MEM() prints RAM dump from the specified location
 
 ### Code
 ```
-char a[]="Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+char a[] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
 DUMP_MEM(a, sizeof(a));
 ```
 
