@@ -28,6 +28,7 @@ __inline void align_dec(WORD value)
 }
 //-----------------------------------------------------------------------------
 #define debug_print_dec_aligned(value) align_dec(value); debug_print_dec(value);
+#define RAM_GUARD_MAGIC_NUM     0xFEFEFEFE
 #ifdef RAM_GUARD_ENABLED
 //-----------------------------------------------------------------------------
 void init()
@@ -35,7 +36,7 @@ void init()
     // prefill whole the RAM with a magic 0xFE
     for(volatile register BYTE* ptr = (BYTE*)RAMSTART; ptr < (BYTE*)RAMEND; ptr++)
     {
-        *ptr = 0xFE;
+        *ptr = RAM_GUARD_MAGIC_NUM >> 24;
     }
 }
 //-----------------------------------------------------------------------------
@@ -80,7 +81,7 @@ void memory_usage()
     while(ptr-- > (BYTE*)RAMSTART)
     {
         tracker = (tracker << 8) | *ptr;
-        if(tracker == 0xFEFEFEFE)
+        if(tracker == RAM_GUARD_MAGIC_NUM)
         {
             found = true;
             break;
