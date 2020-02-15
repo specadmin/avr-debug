@@ -210,6 +210,7 @@ If DEBUG_EXTENDED_DUMP is **not** defined
 ## memory_usage()
 
 memory_usage() prints RAM usage at the moment, when it is called. See [AVR Libc docs](https://www.nongnu.org/avr-libc/user-manual/malloc.html) for details.
+![AVR RAM](https://github.com/specadmin/avr-debug/blob/master/AVR_memory.png)
 Please note, that the following macro should be defined to enable this function, the function will do nothing otherwise.
 ```
 #define RAM_GUARD_ENABLED
