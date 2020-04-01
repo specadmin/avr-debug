@@ -12,10 +12,105 @@ char dbg_buf[DEBUG_BUF_SIZE];
 //-----------------------------------------------------------------------------
 #pragma GCC diagnostic ignored "-Wunused-function"
 //-----------------------------------------------------------------------------
-static void DEBUG_SECTION _write_byte(char data)
+__inline void _write_byte_4M_230400(char data)
 {
-    disable_interrupts();
-    #if DEBUG_BAUD_RATE==1152000
+    register BYTE cbit;
+    asm volatile
+    (
+        "cbi %[port],%[pin]\n"  // start bit
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "nop\n"
+        "ldi %[cbit],8 \n"
+  "loop: sbrc %[data],0 \n"     // 1-2-3
+        "rjmp one\n"            // 2 clk
+        "nop\n"                 // to-0 delay
+        "cbi %[port],%[pin]\n"  // 2 clk
+        "rjmp .+4 \n"           // to-1 anti-delay
+   "one: sbi %[port],%[pin]\n"  // 2 clk
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "lsr %[data] \n"
+        "dec %[cbit] \n"
+        "brne loop \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"           // before-stop delay
+        "sbi %[port],%[pin]\n"  // stop bit
+        : [cbit] "=&r" (cbit)
+        : [port] "I" (_SFR_IO_ADDR(DEBUG_PORT)),
+          [pin]  "I" (DEBUG_BIT),
+          [data] "r" (data)
+    );
+}
+//-----------------------------------------------------------------------------
+__inline void _write_byte_4M_115200(char data)
+{
+    register BYTE cbit;
+    asm volatile
+    (
+        "cbi %[port],%[pin]\n"  // start bit
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "ldi %[cbit],8 \n"
+  "loop: sbrc %[data],0 \n"     // 1-2-3
+        "rjmp one\n"            // 2 clk
+        "rjmp .+0 \n"           // to-0 delay
+        "cbi %[port],%[pin]\n"  // 2 clk
+        "rjmp .+4 \n"           // to-1 anti-delay
+   "one: sbi %[port],%[pin]\n"  // 2 clk
+        "nop\n"
+        "nop\n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "lsr %[data] \n"
+        "dec %[cbit] \n"
+        "brne loop \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"           // before-stop delay
+        "sbi %[port],%[pin]\n"  // stop bit
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        "rjmp .+0 \n"
+        : [cbit] "=&r" (cbit)
+        : [port] "I" (_SFR_IO_ADDR(DEBUG_PORT)),
+          [pin]  "I" (DEBUG_BIT),
+          [data] "r" (data)
+    );
+}
+//-----------------------------------------------------------------------------
+__inline void _write_byte_16M_1152000(char data)
+{
     register BYTE cbit;
     asm volatile
     (
@@ -46,17 +141,16 @@ static void DEBUG_SECTION _write_byte(char data)
           [pin]  "I" (DEBUG_BIT),
           [data] "r" (data)
     );
-    #else
-        #if DEBUG_BAUD_RATE==115200
-            #define D_DELAY 139
-        #else
-            #error Unsupported baud rate defined
-        #endif
-        #define D_DELAY2 D_DELAY-2
-        #define D_DELAY7 D_DELAY-7
-        #define D_DELAY8 D_DELAY-8
+}
+//-----------------------------------------------------------------------------
+__inline void _write_byte_16M_115200(char data)
+{
+    #define D_DELAY         139
+    #define D_DELAY2        (D_DELAY - 2)
+    #define D_DELAY7        (D_DELAY - 7)
+    #define D_DELAY8        (D_DELAY - 8)
     clr_bit(DEBUG_PORT, DEBUG_BIT); // start bit
-    delay_cycles(D_DELAY2);    // ceil(F_CPU)/115200-2 (-2 clocks for 'for' initialisation)
+    delay_cycles(D_DELAY2);    // ceil(F_CPU)/115200-2 (-2 clocks for 'for' initialization)
     for(int i = 0; i < 8; i++) // data bits
     {
         if(data & 0x01)
@@ -73,14 +167,39 @@ static void DEBUG_SECTION _write_byte(char data)
     }
     set_bit(DEBUG_PORT, DEBUG_BIT); // stop bit
     delay_cycles(D_DELAY2);    // -2 clocks
-    #endif
-    resume_interrupts();
 }
 //-----------------------------------------------------------------------------
-static void DEBUG_SECTION _write(const char *data,int num)
+static void DEBUG_SECTION _write_byte(char data)
+{
+    #if F_CPU==4000000UL
+        #if DEBUG_BAUD_RATE==230400
+            _write_byte_4M_230400(data);
+        #elif DEBUG_BAUD_RATE==115200
+            _write_byte_4M_115200(data);
+        #else
+            #error "Unsupported baud rate, sorry"
+        #endif
+    #elif F_CPU==16000000UL
+        #if DEBUG_BAUD_RATE==1152000
+            _write_byte_16M_1152000(data);
+        #elif DEBUG_BAUD_RATE==115200
+            _write_byte_16M_115200(data);
+        #else
+            #error "Unsupported baud rate, sorry"
+        #endif
+    #else
+        #error "Unsupported CPU frequency, sorry"
+    #endif
+}
+//-----------------------------------------------------------------------------
+static void DEBUG_SECTION _write(const char *data, int num)
 {
     for(int i = 0; i < num; i++)
+    {
+        disable_interrupts();
         _write_byte(data[i]);
+        resume_interrupts();
+    }
 }
 //-----------------------------------------------------------------------------
 __inline void _endl()
@@ -113,7 +232,7 @@ __inline void DEBUG_SECTION _print_hexN(long int data, BYTE bytes)
         *p-- = (c < 10) ? c + '0' : c - 10 + 'A';
         data >>= 4;
     }
-    _write(buf+sizeof(buf)-bytes,bytes);
+    _write(buf + sizeof(buf) - bytes, bytes);
 }
 //-----------------------------------------------------------------------------
 void DEBUG_SECTION debug_print_pm(const char *str,bool new_line)

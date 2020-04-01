@@ -4,9 +4,16 @@ This is a C++ library for sending any debug information from your **AVR** device
 
 
 ### Limits
-* The library supports only 16 MHz CPU frequency.
-* UART baudrate could be set to 115200 or 1152000 only.
 * The library assumes that you are using GNU AVR compiller in your project.
+* Only the following baud rates and clock frequencies are supported by the library.
+
+| Clock freq |  Baud rate |
+|:----------:|:----------:|
+|    4 MHz   |    230 400 |
+|    4 MHz   |    115 200 |
+|   16 MHz   |  1 152 000 |
+|   16 MHz   |    115 200 |
+
 
 
 # Connect

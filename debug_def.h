@@ -28,16 +28,8 @@
 #error Please define DEBUG_BAUD_RATE in configuration file (config.h)
 #endif
 
-#if (DEBUG_BAUD_RATE!=115200) && (DEBUG_BAUD_RATE!=1152000)
-#error DEBUG_BAUD_RATE should be equal to 115200 or 1152000
-#endif
-
 #ifndef F_CPU
 #error Please define F_CPU in configuration file (config.h)
-#endif
-
-#if F_CPU!=16000000
-#error Sorry, only 16 MHz CPU frequency is supported
 #endif
 
 #ifndef DEBUG_BUF_SIZE
@@ -55,7 +47,7 @@
 //-----------------------------------------------------------------------------
 
 // DEBUG_INIT initialises the transmitter
-#define DEBUG_INIT() { set_bit(DEBUG_DDR, DEBUG_BIT); set_bit(DEBUG_PORT, DEBUG_BIT); mdelay(100); DSTR("=========="); DSTR("DEBUG INIT"); DSTR("=========="); }
+#define DEBUG_INIT() { set_bit(DEBUG_PORT, DEBUG_BIT); set_bit(DEBUG_DDR, DEBUG_BIT); mdelay(100); DSTR("\n=========="); DSTR("DEBUG INIT"); DSTR("=========="); }
 
 // DSTRN prints const string stored in .debugger.strtab section without carrier return
 #define DSTRN(str)  { debug_print_pm(PSTRD(str),false); }
