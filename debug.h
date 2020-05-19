@@ -35,7 +35,7 @@
     #define DSTRN(str)
     #define DUMP_MEM(ptr,size)
     #define DREG(reg)
-    #define DNUM(var)
+    #define DVAR(var)
     #define DHEX(var)
     #define DHEX8(count, ...)
 #endif
