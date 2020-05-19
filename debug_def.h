@@ -37,7 +37,7 @@
 #endif
 
 #ifndef DEBUG_SECTION
-#define DEBUG_SECTION   __attribute__ ((section (".debugger.text")))
+#define DEBUG_SECTION   __attribute__ ((section (".text")))
 #endif
 
 //-----------------------------------------------------------------------------
