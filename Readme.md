@@ -13,6 +13,7 @@ This is a C++ library for sending any debug information from your **AVR** device
 |    4 MHz   |    115 200 |
 |   16 MHz   |  1 152 000 |
 |   16 MHz   |    115 200 |
+|   20 MHz   |  1 152 000 |
 
 
 

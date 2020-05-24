@@ -169,9 +169,47 @@ __inline void _write_byte_16M_115200(char data)
     delay_cycles(D_DELAY2);    // -2 clocks
 }
 //-----------------------------------------------------------------------------
+__inline void _write_byte_20M_1152000(char data)
+{
+    register BYTE cbit;
+    asm volatile
+    (
+        "cbi %[port],%[pin]\n"  // start bit
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "nop \n"
+        "ldi %[cbit],8 \n"
+  "loop: sbrc %[data],0 \n"
+        "rjmp one\n"
+        "cbi %[port],%[pin]\n"
+        "rjmp .+6 \n"
+   "one: sbi %[port],%[pin]\n"
+        "rjmp .+0\n"
+        "nop \n"
+        "nop \n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "lsr %[data] \n"
+        "dec %[cbit] \n"
+        "brne loop \n"
+        "rjmp .+0\n"
+        "rjmp .+0\n"
+        "sbi %[port],%[pin]\n"  // stop bit
+        "rjmp .+0\n"
+        : [cbit] "=&r" (cbit)
+        : [port] "I" (_SFR_IO_ADDR(DEBUG_PORT)),
+          [pin]  "I" (DEBUG_BIT),
+          [data] "r" (data)
+    );
+}
+//-----------------------------------------------------------------------------
 static void DEBUG_SECTION _write_byte(char data)
 {
-    #if F_CPU==4000000UL
+    #if F_CPU==4000000UL      // 4 MHz
         #if DEBUG_BAUD_RATE==230400
             _write_byte_4M_230400(data);
         #elif DEBUG_BAUD_RATE==115200
@@ -179,11 +217,17 @@ static void DEBUG_SECTION _write_byte(char data)
         #else
             #error "Unsupported baud rate, sorry"
         #endif
-    #elif F_CPU==16000000UL
+    #elif F_CPU==16000000UL   // 16 MHz
         #if DEBUG_BAUD_RATE==1152000
             _write_byte_16M_1152000(data);
         #elif DEBUG_BAUD_RATE==115200
             _write_byte_16M_115200(data);
+        #else
+            #error "Unsupported baud rate, sorry"
+        #endif
+    #elif F_CPU==20000000UL   // 20 MHz
+        #if DEBUG_BAUD_RATE==1152000
+            _write_byte_20M_1152000(data);
         #else
             #error "Unsupported baud rate, sorry"
         #endif
