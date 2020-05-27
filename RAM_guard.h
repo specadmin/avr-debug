@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 void heap_info();
 //-----------------------------------------------------------------------------
-#ifdef RAM_GUARD_ENABLED
+#if(defined RAM_GUARD_ENABLED && defined DEBUG)
 void init() __attribute__ ((section(".init0"), naked));
 void memory_usage();
 #else
