@@ -185,10 +185,11 @@ __inline void _write_byte_20M_1152000(char data)
   "loop: sbrc %[data],0 \n"
         "rjmp one\n"
         "cbi %[port],%[pin]\n"
-        "rjmp .+6 \n"
+        "nop \n"
+        "nop \n"
+        "rjmp .+8 \n"
    "one: sbi %[port],%[pin]\n"
         "rjmp .+0\n"
-        "nop \n"
         "nop \n"
         "rjmp .+0\n"
         "rjmp .+0\n"
@@ -209,6 +210,7 @@ __inline void _write_byte_20M_1152000(char data)
 //-----------------------------------------------------------------------------
 static void DEBUG_SECTION _write_byte(char data)
 {
+    disable_interrupts();
     #if F_CPU==4000000UL      // 4 MHz
         #if DEBUG_BAUD_RATE==230400
             _write_byte_4M_230400(data);
@@ -234,6 +236,7 @@ static void DEBUG_SECTION _write_byte(char data)
     #else
         #error "Unsupported CPU frequency, sorry"
     #endif
+    resume_interrupts();
 }
 //-----------------------------------------------------------------------------
 static void DEBUG_SECTION _write(const char *data, int num)
